@@ -53,3 +53,141 @@ Random matching and fixing up => Simple-But-Invalid
      May not terminate...
 
 想法2. Propose and Reject (by Gale and Shapley 1962)
+男生向女生求婚，女生可接受(暫時->至最終狀態)or拒絕
+Status of each person: free(unmarried)~engaged~married
+  Deferred decision making: You may hesitate for a while before you are pretty sure you have got a reasonably good partner.
+Goal: self-enforcing
+  1. initialize each peron to be free
+  2. while(some man m is free and hasn't proposed to every woman) do
+  3.    w = highest ranked woman in m's list to whom m has not yet proposed
+  4.    if(w is free) then
+  5.      (m, w) become engaged
+  6.    else if(w prefers m to her fiance m') then
+  7.      (m, w) become engaged
+  8.      m' become free
+  9.  return the set S of engaged pairs
+
+Q: Correct? (Stable? or even perfect?) Terminate? 如何證明? 最好最差的情況
+
+誰向誰propose會影響優先preference的差異 => 代表反過來propose會有另一組對稱解
+
+
+50min
+
+Interval Scheduling
+很多工作，且時間有重疊，能處理的機器只有一台，應如何安排可以達到最佳化?
+Given: Set of jobs with start times and finish times
+Goal: Find maximun cardinality subset of mutually compatible jobs (jobs don't overlap)
+
+衍生=>每個工作的加權不同
+Given: Set of jobs with start times, finish times, and weights
+Goal: Find maximum weight subset of mutually compatible jobs (jobs don't overlap) => 可優先選短時間效益高者
+
+
+Bipartite Matching
+Given: Bipartite graph
+Goal: Find maximum cardinality matching
+男女有連線，但無ranking => 在有連線下，如何配對會有最多配對 #perfect matching : 所有人都配對到的狀態
+
+#cardinality: 數量、size
+
+Independent Set
+Given: Graph
+Goal: Find maximum cardinality independent set (subset of nodest s.t. no two joined by an edge)
+
+依圖找出無連線的集合，且集合元素是最大的集合
+
+Comppetitive Facility Location
+Given: Graph width weight on each node
+Game:
+  Two competing players alternate in selecting nodes
+  Do not allow to select a node if any of its neighbors have been selected
+Goal: Select a maximum weight subset of nodes
+
+Ex. 10-1-5-15-5-1-5-1-15-10 => 分析後手的玩家最多可以拿到幾分(保證20分但不一定能25分)
+
+以上問題分類：
+Efficiently solvable
+  Interval scheduling: nlogn greedy algorithm
+  Weighted interval scheduling: nlogn dynamic programming algorithm
+  Bipartite mathing: n^k max-flow based algorithm
+Hard
+  Independent set: NP-complete
+  Competitive facility location: PSPACE-complete (even harder!)
+
+  Stable Matching 的分析
+
+  STEP1:
+  Formulating the Problem
+  The stable matching problem
+  Given:
+    M: n men
+    W: n women
+    M * W: Each person has ranked all members of the opposite sex with a unique number between 1 and n
+      in order of perference
+  Goal:
+    Marry the men and women off such that
+    There are no two people of opposite sex who would both rather have each other than their current partners.
+      If there are no such people, all the marriages are stable.
+
+  STEP2:
+  Designing the algorithm
+  Correctness:
+    Termination: G-S terminates after at most n^2 iterations.
+    Perfection: Everyone gets married.
+    Stability: The marriage are stable.
+  Male-optimal and female-pessimal
+  All executions yield the same matching
+
+  Procedure的寫法
+  Gale-Shapley <- 取名字，加上input or output參數
+  1. initialize each peron to be free
+  2. while(some man m is free and hasn't proposed to every woman) do
+  3.    w = highest ranked woman in m's list to whom m has not yet proposed
+  4.    if(w is free) then
+  5.      (m, w) become engaged
+  6.    else if(w prefers m to her fiance m') then
+  7.      (m, w) become engaged
+  8.      m' become free
+  9.  return the set S of engaged pairs
+
+  每一行都要簡易明瞭，且要標行號
+  先確定以上步驟分析完畢才打開電腦開始寫程式
+
+  證明：1.反證法 2.數學歸納法
+
+  Correctness: Termination
+  G-S terminates after at most n^2 iterations of the while loop. <= 證明G-S最多執行n^2次
+  ．while迴圈不好計算for迴圈好計算
+  想法1.
+    先找出有幾個free的男生可以執行2以下的步驟? -> 男生propose後會變不是free但又有可能會被dump無法計算...
+  想法2.
+    從iteration下手，每個iteration一定存在一個男生向一個女生propose ->試著計算propose的次數
+    每個男生最多向n個女生propose且共有n個女生 -> 最多propose n^2 次 (有限)
+  Pf:
+    At each iteraction, a man proposes to a new woman.
+    There are only n^2 possible proposals.
+  Observation 1: The sequence of women to whom m proposese gets worse and worses.
+    //男生的求婚對象會愈來愈差
+  Observation 2: Once a woman w receives her first proposal, w remains engaged; she only trades up.
+    //女生被求婚後，就會保持engaged，且對象只會愈換愈好
+
+  Correctness: Perfection
+  The set S returned at termination is perfect matching.
+    i.e., all men get married
+    Prove by contradiction! (反證法)
+  Pf:
+    Suppose that G-S algorithm terminates with a free man m.
+    At termination, m had already proposed to every woman. Otherwise, the while loop would not have exited.
+      => 檢視原演算法的假設
+    Since there is a free man m, there must be at least a free woman, say w. w was never proposed to.
+    This contradicts that m had already proposed to every woman.
+    翻譯：
+      假設有一個男生在經過G-S演算法配對後，仍是free => 要跳出while迴圈，此男m必向所有女生求婚過(line 2)
+      由假設與題意，n男n女 => 有一個男生free必有一個女生free，但女生要free代表沒有被propose過?? 矛盾囉
+  
+  Uniqueness?
+  Q: For a given instance, is stable matching is unique?
+  A: not really.
+    1.男向女propose 2.女向男propose 會有不同結果
+
