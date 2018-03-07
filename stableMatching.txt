@@ -1,0 +1,55 @@
+reference http://ocw.nctu.edu.tw/course_detail-v.php?bgid=8&gid=0&nid=493&v5=kxIQ86qMtfk
+
+/************************************************************************************************/
+If You Are a Matchmaker...
+
+Imagine you are a Matchmaker
+  One hundred female clients, and one hundred male clients
+  Each woman has given you a complete list of the hundred men, ordered by her preference: first 
+  choice, second choice, and so on
+  Each man has given you a list of women, ranked analogously
+  Your job is to arrange one hundred "happy" marriages
+    Neither singlehood nor polygamy
+    Happy and stable (You don't want them to divorce or to develop outside relationships)
+/************************************************************************************************/
+
+example:
+
+men: X, Y, Z ; women: A, B, C
+
+Men's preference
+    1st   2nd   3rd
+X    A     B     C
+Y    B     A     C
+Z    A     B     C
+
+Women's preference
+    1st   2nd   3rd
+A    Y     X     Z
+B    X     Y     Z
+C    X     Y     Z
+
+配對結果不能存在更好的配對方式
+Perfect matching: Everyone is matched monogamously
+  Each man gets exactly one woman
+  Each woman gets exactly one man
+Stablility: No incentive for some pair of participants to undermine assignment by joint action.
+  In matching M, an unmatched pair(m, w) is unstable if man m and woman w prefer each other to current partners.
+  Unstable pair(m, w) could each improve by eloping.
+
+Stable matching: Perfect matching without unstable pairs.
+
+The stable matching problem: Given the preference lists of n men and n women, find a stable matching if one exists.
+
+想法1.
+Random matching and fixing up => Simple-But-Invalid
+  1. Start with some matching
+  2. while (there is an unstable pair) don
+  3.  Swap mates to make the pair stable
+
+  2, 3不實際，每次解掉一個pair可能造成新的不stable的pair => while迴圈走不完
+  Q: Valid?
+  A: This will NOT work since a loop can occur. Swaps can be made that might continually result in unstable pairs.
+     May not terminate...
+
+想法2. Propose and Reject (by Gale and Shapley 1962)
